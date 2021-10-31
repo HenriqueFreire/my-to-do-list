@@ -4,18 +4,27 @@ let tasks = localStorage.getItem('tasks') !== null ? localStorageTasks : [];
 // Function that creates elements in the DOM based on received parameters
 function addTaskIntoTheDOM({id, description, deadline}) {
     const li = document.createElement('li')
+    let brazilianDateFormat = deadline.split('-').reverse().join('/')
     li.innerHTML = `<input type="checkbox" class="complete">
-    ${description} ${deadline}
-    <button class="btnEdit" onclick="editTask(${id})">&#128393</button>
-    <button class=btnDelete" onclick="removeTask(${id})">&#128465 </button>`
+    ${brazilianDateFormat} ${description}
+    <button class="btnEdit" title="edit" onclick="editTask(${id})">&#128393</button>
+    <button class=btnDelete" title="delete" onclick="removeTask(${id})">&#128465 </button>`
     li.setAttribute('id', id)
     taskList.append(li)
 }
 
 // Function that updates elements in the DOM
 function init() {
+    let = myarray = tasks
+    
+    myarray.sort(function(a, b) {
+        if(a.deadline < b.deadline) return -1;
+        if(a.deadline > b.deadline) return 1;
+        return 0;
+    })
+
     taskList.innerHTML = ''
-    tasks.forEach(addTaskIntoTheDOM);
+    myarray.forEach(addTaskIntoTheDOM);
 }
 
 // Function that stores the contents of the "tasks" array in localStorage
@@ -30,7 +39,7 @@ addTask.addEventListener('click', function() {
     const deadline = taskDate.value
     
 // Check if the inputs have been filled
-    if (description.value === '' || deadline.value === '' ) {
+    if (description === '' || deadline === '' ) {
         alert('The fields must be filled in!');
         return
     }
@@ -56,12 +65,12 @@ addTask.addEventListener('click', function() {
     
     updateLocalStorage()
 })
-
+// Function that deletes the task from the array
 function removeTask(ID) {
     tasks = tasks.filter(tasks => tasks.id !== ID)
     updateLocalStorage()
 }
-
+// Function that enables task information in the DOM so that the user can edit it
 function editTask(ID) {
     let editingTaskIndex = null
     const liEditing = document.getElementById(ID)
@@ -76,7 +85,7 @@ function editTask(ID) {
         }
     }
 }
-
+// Function that saves the information in the element found by the parameter ID of the "editTask" function
 function saveEditTask(i) {
     // Check if the inputs have been filled
     if (liTaskDescription.value === '' || liTaskDate.value === '' ) {
@@ -90,6 +99,5 @@ function saveEditTask(i) {
 }
 
 init()
-
 
 
